@@ -5,6 +5,8 @@ from helper import *
 from youtube_api import video_search
 from tmdb_helper import *
 from movie_helper import *
+from server import keep_alive
+from discord_components import interaction
 
 client = discord.Client()
 command_pref = "uwu"
@@ -21,6 +23,8 @@ async def on_guild_join(guild):
         if channel.permissions_for(guild.me).send_messages:
             await channel.send('Beep Boop! I have risen! TREMBLE in fear mortals of my mere presence. If you need help please use the "UwU help" command.')
         break
+
+
 
 
 @client.event
@@ -54,27 +58,60 @@ async def on_message(message):
         
 #Movie Stuff
     if message.content.startswith(f'{command_pref} am'):
-        await am_func(message)
+        msg = message.content
+        movie_title = msg.split('am ', 1)[1].lower()
+        await am_func(message, movie_title, message.author)
 
     if message.content.startswith(f'{command_pref} rm'):
-        await rm_func(message)
+        msg = message.content
+        movie_title = msg.split('rm ', 1)[1].lower()
+        await rm_func(message, movie_title, message.author)
 
     if message.content.startswith(f'{command_pref} mw'):
         await mw_func(message)
+
+        while True:
+            res = await client.wait_for(event="button_click")
+
+            if res.channel == message.channel and res.message.components[0].components[0].label.startswith("Remove"):
+                    res.message.components[0].components[0].disabled = True
+                    await res.respond(
+                        type=7,
+                        content = f"{res.component.custom_id} was requested to be removed",components=res.message.components
+                    )
+                    author_name=res.author
+                    await rm_func(message, res.component.custom_id,author_name)
+
+            
 #moviefind
     if message.content.startswith(f'{command_pref} mf'):
         await mf_func(message)
 
     if message.content.startswith(f'{command_pref} ra'):
-        await ra_func(message)
+        await ra_func(message, message.author)
 
-    if message.content.startswith(f'{command_pref} button'):
-        await message.channel.send(fortune)
+    if message.content.startswith(f'{command_pref} trending'):
+        await trending(message)
+
+        while True:
+            res = await client.wait_for(event="button_click")
+            if res.channel == message.channel and res.message.components[0].components[0].label.startswith("Add"):
+                res.message.components[0].components[0].disabled = True
+                await res.respond(
+                    type=7,
+                    content = f"{res.component.custom_id} was requested to be added",components=res.message.components
+                )
+                author_name=res.author
+                await am_func(message, res.component.custom_id,author_name)
+				
+        
+        
 
 #Help
     if message.content.startswith(f'{command_pref} help'):
         await helper(message)
 
+keep_alive()
 client.run(os.environ['Token'])
 
 #to do

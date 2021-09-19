@@ -1,11 +1,63 @@
 import json
 import os
 import requests
+from random import sample
 from justwatch import JustWatch
 
 tmdb_base_url = "https://api.themoviedb.org/3/"
 tmdb_key = os.environ["TMDB_key"]
 
+api_requests = {
+        "fetchTrending": f'trending/movie/week?api_key={tmdb_key}&language=en-US',
+        "fetchNetflixOriginals": f'discover/tv?api_key={tmdb_key}&with_networks=213',
+        "fetchTopRated": f'movie/top_rated?api_key={tmdb_key}&language=en-US',
+        "fetchActionMovies": f'discover/movie?api_key={tmdb_key}&with_genres=28',
+        "fetchComedyMovies": f'discover/movie?api_key={tmdb_key}&with_genres=35',
+        "fetchHorrorMovies": f'discover/movie?api_key={tmdb_key}&with_genres=27',
+        "fetchRomanceMovies": f'discover/movie?api_key={tmdb_key}&with_genres=10749',
+        "fetchDocumentaries": f'discover/movie?api_key={tmdb_key}&with_genres=99',
+}
+
+# define trending
+def tmdb_trending():
+
+	random_list = sample(range(0, 199), 5)
+	random_list.sort()
+	movie_trend_list =[]
+
+	for num in random_list:
+		q, mod = divmod(num,20)
+
+		if q == 0:
+			q = 1
+
+		url = tmdb_base_url + f'trending/movie/week?api_key={tmdb_key}&language=en-US&page={q}'
+		response = requests.get(url)
+		movie_trend_list.append(response.json()["results"][mod])
+
+	return movie_trend_list
+	
+		#print(response.json()["results"][mod]) 
+		#print(json.dumps(response.json()["results"][mod], indent=4, sort_keys=True, ensure_ascii=False))
+
+	# page_dict = {0:[],
+	# 			    1:[],
+	# 				2:[],
+	# 				3:[],
+	# 				4:[]}
+	# print(random_list)
+	# for num in random_list:
+	# 	q, mod = divmod(num,20)
+	# 	page_dict[q].append(mod)
+	# print(page_dict)
+	# for keys in page_dict.keys():
+	# 	if len(page_dict[keys]) == 0:
+	# 		continue
+	# 	else:
+	# 		url = tmdb_base_url + f'trending/movie/week?api_key={tmdb_key}&language=en-US&page={keys+1}'
+	# 		response = requests.get(url)
+	# 		for x in page_dict[keys]:
+	# 			print(json.dumps(response.json()["results"][x], indent=4, sort_keys=True, ensure_ascii=False))
 
 # search for a movie using keyword
 def tmdb_search(mov_title):
@@ -30,25 +82,15 @@ def title_validator(mov_title):
 
 
 def trending_daily():
-    requests = {
-        "fetchTrending": f'/trending/all/week?api_key=${tmdb_key}&language=en-US',
-        "fetchNetflixOriginals": f'/discover/tv?api_key=${tmdb_key}&with_networks=213',
-        "fetchTopRated": f'/movie/top_rated?api_key=${tmdb_key}&language=en-US',
-        "fetchActionMovies": f'/discover/movie?api_key=${tmdb_key}&with_genres=28',
-        "fetchComedyMovies": f'/discover/movie?api_key=${tmdb_key}&with_genres=35',
-        "fetchHorrorMovies": f'/discover/movie?api_key=${tmdb_key}&with_genres=27',
-        "fetchRomanceMovies": f'/discover/movie?api_key=${tmdb_key}&with_genres=10749',
-        "fetchDocumentaries": f'/discover/movie?api_key=${tmdb_key}&with_genres=99',
-    }
     url = f"{tmdb_base_url}trending/movie/day?api_key={tmdb_key}"
     response = requests.get(url)
-    print(json.dumps(response.json(), indent=4, sort_keys=True, ensure_ascii=False))
+    #print(json.dumps(response.json(), indent=4, sort_keys=True, ensure_ascii=False))
 
 
 def genre_list():
     url = f"{tmdb_base_url}genre/movie/list?api_key={tmdb_key}"
     response = requests.get(url)
-    print(json.dumps(response.json(), indent=4, sort_keys=True, ensure_ascii=False))
+    #print(json.dumps(response.json(), indent=4, sort_keys=True, ensure_ascii=False))
 
 
 def movie_watchlinks(movie_id):
@@ -59,6 +101,8 @@ def movie_watchlinks(movie_id):
     return response.json()["results"]["US"]["link"]
 
 
+
+# Helps get weblinks for amazon and netflix
 def just_watch_api(movie_name):
     just_watch = JustWatch(country='US')
 
@@ -75,18 +119,21 @@ def just_watch_api(movie_name):
     #print(json.dumps(results["items"][0]['offers'][0], indent=4, sort_keys=True, ensure_ascii=False))
 
     #parsing through the data and finding amazon and netflix links
-    for item in results["items"][0]['offers']:
-        if item["provider_id"] == 8 and netflix == False:
-            netflix_link = item['urls']['standard_web']
-            if netflix_link != 'https://www.netflix.com/':
-                netflix = True
-        if item["provider_id"] == 582 or item["provider_id"] == 10 and amazon == False:
-            amazon_link = item['urls']['standard_web']
-            if amazon_link != 'https://www.amazon.com/Amazon-Video/b?ie=UTF8&node=2858778011':
-                amazon = True
-        if netflix and amazon:
-            break
-    print(netflix_link,amazon_link)
+    try:
+        for item in results["items"][0]['offers']:
+            if item["provider_id"] == 8 and netflix == False:
+                netflix_link = item['urls']['standard_web']
+                if netflix_link != 'https://www.netflix.com/':
+                    netflix = True
+            if item["provider_id"] == 582 or item["provider_id"] == 10 and amazon == False:
+                amazon_link = item['urls']['standard_web']
+                if amazon_link != 'https://www.amazon.com/Amazon-Video/b?ie=UTF8&node=2858778011':
+                    amazon = True
+            if netflix and amazon:
+                break
+    except:
+        pass
+            
     return not netflix, not amazon, netflix_link, amazon_link
 
 

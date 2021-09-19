@@ -1,11 +1,11 @@
 import discord
+import json
 from replit import db
 from helper import button_helper
 from  discord_components import *
 from youtube_api import video_search
 from omdb_helper import get_poster
-from tmdb_helper import tmdb_search, title_validator, movie_watchlinks, just_watch_api
-
+from tmdb_helper import tmdb_search, title_validator, movie_watchlinks, just_watch_api, tmdb_trending
 
 ##################################################################
 #|                    Movie Finder/ Search function             |#
@@ -101,14 +101,20 @@ async def mf_func(message):
 
 
     # watchlinks
-    tmdb_link = movie_watchlinks(tmdb_data["id"])
+    isNotTMDB = False
+    try:
+        tmdb_link = movie_watchlinks(tmdb_data["id"])
+    except:
+        isNotTMDB = True
+
     isNotNetflix, isNotAmazon, netflix_link, amazon_link = just_watch_api(mov_title)
    
     try:
         await button_helper(message, **{"TMDB":tmdb_link, 
                                         "netflix_link":netflix_link, "amazon_link":amazon_link,
                                         "isNotNetflix":isNotNetflix,
-                                        "isNotAmazon":isNotAmazon})
+                                        "isNotAmazon":isNotAmazon,
+                                        "isNotTMDB":isNotTMDB})
     except:
         await message.channel.send("Movie Link Error", 
                                     components=[[Button(style=ButtonStyle.red,
@@ -142,20 +148,19 @@ async def mf_func(message):
 ##################################################################
 
 
-async def am_func(message):
-    msg = message.content
-    movie_title = msg.split('am ', 1)[1].lower()
+async def am_func(message, mov_title, author):
+    
 
     #validates if the movie title exists in the TMDB api
-    movie_title, is_val = title_validator(movie_title)
+    movie_title, is_val = title_validator(mov_title)
     if (is_val):
         if (add_movie_title(movie_title, message.guild.id)):
-            await message.channel.send(f"{movie_title} was added to list")
+            await message.channel.send(f"{movie_title} was added to list by {author.mention} ✅")
         else:
-            await message.channel.send(f"{movie_title} is already in the list")
+            await message.channel.send(f"{movie_title} is already in the list, {author.mention} ✅")
     else:
         await message.channel.send(
-            "Movie does not exist, Please check spelling!")
+            f"Movie does not exist, Please check spelling!, {author.mention} ❌")
 
 
 #Adding movie to database queue
@@ -186,20 +191,19 @@ def add_movie_title(movie_title, guild_id):
 ##################################################################
 
 
-async def rm_func(message):
-    msg = message.content
-    movie_title = msg.split('rm ', 1)[1].lower()
+async def rm_func(message,mov_title, author):
+    
 
-    movie_title, is_val = title_validator(movie_title)
+    movie_title, is_val = title_validator(mov_title)
 
     if(is_val):
         try:
             db['mov_'+str(message.guild.id)].remove(movie_title)
-            await message.channel.send(f"{movie_title} was removed from the list")
+            await message.channel.send(f"{movie_title} was removed from the list by {author.mention} ✅")
         except:
-            await message.channel.send(f"{movie_title} was not found in the list")
+            await message.channel.send(f"{movie_title} was not found in the list, {author.mention}  ❌")
     else:
-        await message.channel.send("No movie exists in that name")
+        await message.channel.send(f"No movie exists in that name, {author.mention}    ❌")
 
 
 
@@ -207,9 +211,9 @@ async def rm_func(message):
 #|                 Clear movie Queue (delete all)               |#
 ##################################################################
 
-async def ra_func(message):
+async def ra_func(message, author):
     db['mov_'+str(message.guild.id)] = []
-    await message.channel.send("List was reset")
+    await message.channel.send(f"List was reset by {author.mention} ✅")
 
 
 
@@ -225,7 +229,7 @@ def see_movie_list(guild_id):
 
 
 #Embed for movie watchlist
-async def mw_func(message):
+async def mw_func(message, list_limit = 5):
 
     movie_list = see_movie_list(message.guild.id)
     if len(movie_list) == 0:
@@ -234,7 +238,8 @@ async def mw_func(message):
 
 
     # top 5 movies from the top of queue
-    x = 5 if len(movie_list) > 5 else int(len(movie_list))
+    limit = list_limit
+    x = limit if len(movie_list) > limit else int(len(movie_list))
     
 
     #printing an embed for each of the 5 movies
@@ -312,10 +317,34 @@ async def mw_func(message):
 
 
         #send the embed then repeat loop till 5 movies are printed
-        await message.channel.send(embed=embed)
+        await message.channel.send(embed=embed, components= 
+                                        [Button(style = ButtonStyle.red, 
+                                        label="Remove from watchlist", 
+                                        custom_id = embed.title)
+        ])
 
 
 
 
+
+##################################################################
+#|                           Trending                           |#
+##################################################################
+
+async def trending(message):
+    movie_data = tmdb_trending()
+    
+    for movies in movie_data:
+        embed = discord.Embed(title=movies['original_title'],
+                             	description=movies['overview'],
+                             	color=discord.Colour.blue())
+        embed.set_thumbnail(url=f"https://image.tmdb.org/t/p/w500{movies['poster_path']}")
+        await message.channel.send(embed=embed, components= 
+                                        [Button(style = ButtonStyle.green, 
+                                        label="Add to watchlist", 
+                                        custom_id = embed.title)
+        ])
+
+
+    #print(json.dumps(movie_data, indent=4, sort_keys=True, ensure_ascii=False))
         
-
