@@ -4,6 +4,15 @@ import json
 import datetime
 from discord_components import *
 
+#tmdb workflow start
+try:
+    tmdb_data = tmdb_search(mov_title)
+    tmdb_data = tmdb_data["results"][0]
+    mov_title = tmdb_data["original_title"]
+    poster_path = tmdb_data["poster_path"]
+    backup_poster = f"https://image.tmdb.org/t/p/w500{poster_path}"
+except:
+    pass
 
 #API call for UwU adage
 def get_fortune():
@@ -56,7 +65,18 @@ async def button_helper(message, **kwargs):
                    disabled=kwargs["isNotTMDB"],
 	               emoji=discord.PartialEmoji(name="TMDB",
 	                                          id=887911819002404904))
-	    ]])
+	]])
+
+async def button_helper_dos(message, embed ):
+        await message.channel.send(embed=embed, 
+            components= [[
+                Button(style = ButtonStyle.blue, 
+                    label="More Info",
+                    custom_id = embed.title + "1"),
+                Button(style = ButtonStyle.green, 
+                    label="Add to watchlist", 
+                    custom_id = embed.title)
+        ]])
 
 
 #help command

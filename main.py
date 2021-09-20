@@ -84,8 +84,11 @@ async def on_message(message):
 
             
 #moviefind
-    if message.content.startswith(f'{command_pref} mf'):
-        await mf_func(message)
+    if message.content.startswith(f'{command_pref} mf'):       
+        #msg splitting/preprocessing
+        msg = message.content
+        mov_title = msg.split('mf ', 1)[1].lower()
+        await mf_func(message,mov_title)
 
     if message.content.startswith(f'{command_pref} ra'):
         await ra_func(message, message.author)
@@ -103,6 +106,17 @@ async def on_message(message):
                 )
                 author_name=res.author
                 await am_func(message, res.component.custom_id,author_name)
+
+            elif res.channel == message.channel and res.message.components[0].components[0].label.startswith("More"):
+                movie_name = res.component.custom_id.split("1")[0]
+                await res.respond(
+                    type=7,
+                    content = f"More Information was requested for {movie_name}",
+                    components=res.message.components
+                )
+                author_name=res.author
+                await mf_func(message, movie_name)
+
 				
         
         

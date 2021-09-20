@@ -1,7 +1,7 @@
 import discord
 import json
 from replit import db
-from helper import button_helper
+from helper import button_helper, button_helper_dos
 from  discord_components import *
 from youtube_api import video_search
 from omdb_helper import get_poster
@@ -11,12 +11,9 @@ from tmdb_helper import tmdb_search, title_validator, movie_watchlinks, just_wat
 #|                    Movie Finder/ Search function             |#
 ##################################################################
 
-async def mf_func(message):
+async def mf_func(message, mov_name):
 
-    #msg splitting/preprocessing
-    msg = message.content
-    mov_title = msg.split('mf ', 1)[1].lower()
-
+    mov_title = mov_name
     #tmdb workflow start
     try:
         tmdb_data = tmdb_search(mov_title)
@@ -124,7 +121,7 @@ async def mf_func(message):
 
     #send embed
     await message.channel.send(embed=embed)
-
+    
 
 
     # Youtube api call
@@ -339,12 +336,5 @@ async def trending(message):
                              	description=movies['overview'],
                              	color=discord.Colour.blue())
         embed.set_thumbnail(url=f"https://image.tmdb.org/t/p/w500{movies['poster_path']}")
-        await message.channel.send(embed=embed, components= 
-                                        [Button(style = ButtonStyle.green, 
-                                        label="Add to watchlist", 
-                                        custom_id = embed.title)
-        ])
-
-
+        await button_helper_dos(message, embed)
     #print(json.dumps(movie_data, indent=4, sort_keys=True, ensure_ascii=False))
-        
