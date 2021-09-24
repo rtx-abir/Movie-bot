@@ -10,8 +10,8 @@ def video_search(vid_name, release_year):
             q = vid_name + " " + release_year + " trailer"
         )
         response = request.execute()
-        #new_res = json.dumps(response, indent=4, sort_keys=True, ensure_ascii=False)
-        #PRINT(new_res)
+        # new_res = json.dumps(response, indent=4, sort_keys=True, ensure_ascii=False)
+        # print(new_res)
         vid_id = response['items'][0]["id"]["videoId"]
         
         return vid_id

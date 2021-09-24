@@ -1,7 +1,7 @@
 import discord
 import requests
 import json
-import datetime
+# import datetime
 from discord_components import *
 
 #tmdb workflow start
@@ -102,7 +102,7 @@ async def helper(message):
 	)
 
 	#Grabs current time for footers
-	embed.timestamp = datetime.datetime.utcnow()
-	embed.set_footer(text='\u200b')
+	# embed.timestamp = datetime.datetime.utcnow()
+	# embed.set_footer(text='\u200b')
 
 	await message.channel.send(embed=embed)

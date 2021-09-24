@@ -29,6 +29,7 @@ async def mf_func(message, mov_name):
     movie_data = get_poster(mov_title)
 
 
+
     #embed start: title, description, color
     try:
         embed = discord.Embed(title=mov_title.title(),
@@ -79,22 +80,24 @@ async def mf_func(message, mov_name):
 
     #embed Rating
     try:
-        embed.add_field(name="Rated",value=movie_data["Rated"],inline=True)
+        if tmdb_data["adult"] == True:
+            custom_rating = "R"
+        else:
+            custom_rating = "PG-13"
+
+        embed.add_field(name="Rated",value=custom_rating,inline=True)
     except:
         embed.add_field(name="Rated",value="N/A",inline=True)
 
     
     #embed imaging/poster path
-    if movie_data['Poster'] == 'N/A':
-        if poster_path == "":
-            embed.set_image(
-                url=
-                "https://cdn.searchenginejournal.com/wp-content/uploads/2020/08/404-pages-sej-5f3ee7ff4966b-760x400.png"
-            )
-        else:
-            embed.set_image(url=backup_poster)
-    else:
-        embed.set_image(url=movie_data['Poster'])
+    try:
+        embed.set_image(url=f"https://image.tmdb.org/t/p/w500{poster_path}")
+    except:
+        embed.set_image(
+                    url=
+                    "https://cdn.searchenginejournal.com/wp-content/uploads/2020/08/404-pages-sej-5f3ee7ff4966b-760x400.png"
+                )
 
 
     # watchlinks
@@ -128,7 +131,7 @@ async def mf_func(message, mov_name):
     
     #release year for youtube api call
     try:
-        release_year = movie_data['Year']
+        release_year = tmdb_data["release_date"].split("-")[0]
     except:
         release_year = ''
 
@@ -245,9 +248,18 @@ async def mw_func(message, list_limit = 5):
         # OMDB workflow begins here
         movie_data = get_poster(movie)
 
+        try:
+            tmdb_data = tmdb_search(movie)
+            tmdb_data = tmdb_data["results"][0]
+            mov_title = tmdb_data["original_title"]
+            poster_path = tmdb_data["poster_path"]
+            backup_poster = f"https://image.tmdb.org/t/p/w500{poster_path}"
+        except:
+            pass
+
         #Title, Description of Embed
         embed = discord.Embed(title=movie,
-                              description=movie_data['Plot'],
+                              description=tmdb_data['overview'],
                               color=discord.Colour.blue())
 
         #Embed Rating: IMDB
@@ -279,7 +291,7 @@ async def mw_func(message, list_limit = 5):
         #embed release date
         try:
             embed.add_field(name="Release Date",
-                            value=movie_data["release_date"],
+                            value=tmdb_data["release_date"],
                             inline=True)
         except:
             embed.add_field(name="Release Date",value="N/A",inline=True)
@@ -296,21 +308,24 @@ async def mw_func(message, list_limit = 5):
 
         #embed Rating
         try:
-            embed.add_field(name="Rated",
-                            value=movie_data["Rated"],
-                            inline=True)
+            if tmdb_data["adult"] == True:
+                custom_rating = "R"
+            else:
+                custom_rating = "PG-13"
+
+            embed.add_field(name="Rated",value=custom_rating,inline=True)
         except:
             embed.add_field(name="Rated",value="N/A",inline=True)
 
-
-        # poster/image of movie
-        if movie_data['Poster'] == 'N/A':
+        
+        #embed imaging/poster path
+        try:
+            embed.set_image(url=f"https://image.tmdb.org/t/p/w500{poster_path}")
+        except:
             embed.set_image(
-                url=
-                "https://cdn.searchenginejournal.com/wp-content/uploads/2020/08/404-pages-sej-5f3ee7ff4966b-760x400.png"
-            )
-        else:
-            embed.set_image(url=movie_data['Poster'])
+                        url=
+                        "https://cdn.searchenginejournal.com/wp-content/uploads/2020/08/404-pages-sej-5f3ee7ff4966b-760x400.png"
+                    )
 
 
         #send the embed then repeat loop till 5 movies are printed

@@ -8,6 +8,7 @@ from movie_helper import *
 from server import keep_alive
 from discord_components import interaction
 
+
 client = discord.Client()
 command_pref = "uwu"
 
@@ -21,7 +22,7 @@ async def on_guild_join(guild):
     db["mov_"+str(guild.id)] = []
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages:
-            await channel.send('Beep Boop! I have risen! TREMBLE in fear mortals of my mere presence. If you need help please use the "UwU help" command.')
+            await channel.send('Beep Boop! I have risen! TREMBLE in fear mortals of my mere presence. If you need help please use the "uwu help" command.')
         break
 
 
@@ -98,8 +99,8 @@ async def on_message(message):
 
         while True:
             res = await client.wait_for(event="button_click")
-            if res.channel == message.channel and res.message.components[0].components[0].label.startswith("Add"):
-                res.message.components[0].components[0].disabled = True
+            if res.channel == message.channel and res.component._label.startswith("Add"):
+                res.message.components[0].components[1].disabled = True
                 await res.respond(
                     type=7,
                     content = f"{res.component.custom_id} was requested to be added",components=res.message.components
@@ -107,7 +108,7 @@ async def on_message(message):
                 author_name=res.author
                 await am_func(message, res.component.custom_id,author_name)
 
-            elif res.channel == message.channel and res.message.components[0].components[0].label.startswith("More"):
+            elif res.channel == message.channel and res.component._label.startswith("More"):
                 movie_name = res.component.custom_id.split("1")[0]
                 await res.respond(
                     type=7,
