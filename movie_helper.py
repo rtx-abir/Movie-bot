@@ -1,5 +1,6 @@
 import discord
 import json
+import random
 from replit import db
 from helper import button_helper, button_helper_dos
 from  discord_components import *
@@ -353,3 +354,30 @@ async def trending(message):
         embed.set_thumbnail(url=f"https://image.tmdb.org/t/p/w500{movies['poster_path']}")
         await button_helper_dos(message, embed)
     #print(json.dumps(movie_data, indent=4, sort_keys=True, ensure_ascii=False))
+
+
+
+
+
+
+##################################################################
+#|                      Add a movie review                      |#
+##################################################################
+
+async def review(message):
+    await message.channel.send("https://davesamaniego2016.files.wordpress.com/2016/10/cat-catstruction-play-on-words-construction-cats-favim-com-4174852.jpeg")
+
+
+
+
+
+
+
+
+
+##################################################################
+#|                     Display review list                      |#
+##################################################################
+
+async def reviews(message):
+    await message.channel.send("https://davesamaniego2016.files.wordpress.com/2016/10/cat-catstruction-play-on-words-construction-cats-favim-com-4174852.jpeg")

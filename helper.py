@@ -85,18 +85,19 @@ async def helper(message):
 	                      description='All bot commands start with uwu',
 	                      color=discord.Colour.blue())
 
-	embed.add_field(name='hi', value='Hi', inline=True)
-	embed.add_field(name='adage', value='A fact', inline=True)
-	embed.add_field(name='quote', value='Quote', inline=True)
-	embed.add_field(name='inspiring quote', value='Inspiration', inline=True)
-	embed.add_field(name='am {movie name}', value='Add movie', inline=True)
-	embed.add_field(name='rm {movie name}', value='Remove movie', inline=True)
-	embed.add_field(name='mw {movie name}', value='Movie watchlist', inline=True)
-	embed.add_field(name='mf {movie name}', value='Movie finder', inline=True)
-	embed.add_field(name='ra {movie name}', value='Remove all from list', inline=True)
-	embed.add_field(name='trending', value='A random list of trending movies', inline=True)
-
-	embed.set_thumbnail(
+	# embed.add_field(name='hi', value='Hi', inline=False)
+	# embed.add_field(name='adage', value='A fact', inline=False)
+	# embed.add_field(name='quote', value='Quote', inline=False)
+	# embed.add_field(name='inspiring quote', value='Inspiration', inline=False)
+	embed.add_field(name='```am [movie name]```', value='l\tAdd a movie to the watchlist', inline=False)
+	embed.add_field(name='```rm [movie name]```', value='l\tRemove a movie from the watchlist', inline=False)
+	embed.add_field(name='```mw [movie name]```', value='l\tYour movie watchlist', inline=False)
+	embed.add_field(name='```mf [movie name]```', value='l\tInfo about a movie', inline=False)
+	embed.add_field(name='```cl```', value='l\tClears all movies from the watchlist', inline=False)
+	embed.add_field(name='```trending```', value='l\tDisplays 5 random movies from a list of the top 200 trending movies', inline=False)
+	embed.add_field(name='```rw [movie name] (1-5)```', value='l\tSubmit a rating of 1-5 for a movie', inline=False)
+	embed.add_field(name='''rl''', value='Displays server reviewed movies', inline=False)
+	embed.set_thumbnail( 
 	    url=
 	    'https://pbs.twimg.com/media/EBiczvXW4AA8MZr.jpg'
 	)

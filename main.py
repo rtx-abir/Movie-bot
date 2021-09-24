@@ -91,7 +91,7 @@ async def on_message(message):
         mov_title = msg.split('mf ', 1)[1].lower()
         await mf_func(message,mov_title)
 
-    if message.content.startswith(f'{command_pref} ra'):
+    if message.content.startswith(f'{command_pref} cl'):
         await ra_func(message, message.author)
 
     if message.content.startswith(f'{command_pref} trending'):
@@ -118,8 +118,11 @@ async def on_message(message):
                 author_name=res.author
                 await mf_func(message, movie_name)
 
-				
-        
+#Reviews		
+    if message.content.startswith(f'{command_pref} rw'):  
+        await review(message)
+    if message.content.startswith(f'{command_pref} rl'):  
+        await reviews(message)
         
 
 #Help

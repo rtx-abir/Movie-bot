@@ -1,1 +1,25 @@
 says who added what movie on movie watchlist
+watchlist with dropdown like dank memer
+    https://www.youtube.com/watch?v=-85tDSlfb3w
+    reference video
+Review feature ideas
+    -uwu review (movie name) (1-5)
+    checks
+        if user already submitted review possible?
+        if number is not in range
+        if their opinion is just like stupid
+    -uwu reviews 
+        to see past reviews
+        averages out number score
+		dropdown bar in the order of movies reviewed
+		oldest reviewed at bottom and newest at top
+		embed for movie will just be name poster and rating average
+
+Tv series
+In help dropdown bar to switch between tv commands and movie commands
+tv watch list
+tv currently watching list
+    current progress
+tv reviews
+
+
