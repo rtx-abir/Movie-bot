@@ -1,19 +1,49 @@
-says who added what movie on movie watchlist
-watchlist with dropdown like dank memer
-    https://www.youtube.com/watch?v=-85tDSlfb3w
-    reference video
 Review feature ideas
     -uwu review (movie name) (1-5)
     checks
         if user already submitted review possible?
         if number is not in range
         if their opinion is just like stupid
-    -uwu reviews 
-        to see past reviews
-        averages out number score
-		dropdown bar in the order of movies reviewed
-		oldest reviewed at bottom and newest at top
-		embed for movie will just be name poster and rating average
+
+
+Watched List
+    -Final list shows review average from uwu review
+    Remove button doesnt work
+    Since list is theoretically infinite format command so it checks list by month/year movie was added to watced list?
+    
+    uwu wl =shows months / years where movies were reviewed
+
+    e.x. 
+    uwu wl
+
+    [2019]
+
+    October December
+
+    [2020]
+
+    January February March April
+
+    Indiciate what category you would like to look at with:
+
+    uwu wl [year] [month]
+
+    Then user would go like
+
+    uwu wl 2019 december
+
+    and prints watched list in mw2 format
+
+
+
+
+
+
+
+
+
+
+
 
 Tv series
 In help dropdown bar to switch between tv commands and movie commands
@@ -23,3 +53,126 @@ tv currently watching list
 tv reviews
 
 
+
+
+
+--------////////////////////////////--------
+                   Wordl
+--------////////////////////////////--------
+Play the game in dm's with the bot
+
+Example of how exchange with bot goes
+wl = placeholder for prompt for bot 
+b = correct letter and correct location (uses discord letter emote E.X. :regional_indicator_c: )
+y = correct but wrong location
+w = wrong
+These are emojis btw the squares
+the b y and w are i mean
+
+
+b00ty:wl guess (example word, lets say adieu)
+Woordl: 
+ywwyw
+adieu
+
+b00ty: wl guess algae
+Woordl:
+wbwby
+algae
+
+b00ty: wl guess pleat
+Woordl:
+bbbbb
+
+
+
+
+
+
+
+Issues:
+Confusing since its just the square and doesnt show the letter
+    Maybe put what user typed below the emojis to alleviate? 
+    Spacing on this will maybe be a bitch
+Need to communicate to user previous attempts + attempts left
+Need to communicate to user what buttons have not been used yet
+Btw the idea where the bot reacts ot something with the letters or color boxes dont work since they cant repeat the emojis it would jsut be the emoji but with the number 2
+
+
+
+
+Purpose of bot in a server is to compare stats ala how wordle does it
+
+E.X.
+
+b00ty:wl today
+Woordl: 
+Woordl # <- (what game in the series it is) MM/DD/YY
+blank space
+(too lazy to type it out but the boxes similar to the share thing I sent to discord from woordl website)
+
+If haven't played todays yet
+
+E.X.
+
+b00ty:wl today
+Woordl:
+Uh-Oh, Stinky! You haven't played todays word yet retard
+
+If got it wrong
+
+E.X. 
+
+b00ty:wl today
+Woordl:
+Uh-Oh, Stinky! You didn't get it right today stupid
+
+
+
+
+
+:green_square: = correct letter and correct location
+:yellow_square: = correct letter and wrong location
+:white_square: = letter not in word
+
+
+
+////////////////////////////
+        Player Stats
+////////////////////////////
+
+Personal stats
+-How many played
+-Win %
+-Current Streak
+-Best Streak
+-Guess Distribution
+
+E.X.
+
+b00ty: wl stats
+wordl: # games played 
+       #% win rate
+       # current streak
+       # Best Streak
+       Guess Distribution
+       1 00000
+       2
+       3
+       4 111111111
+       5
+       6 
+
+1 = greenbox emoji (indicates most recent game victory played)
+0 = white box emoji (indicates previous games)
+
+Formula for determining how many green boxes for each one
+
+# of greenboxes = (round to nearest 10's digit (total # of victories at # guess / overall games played)) / 10
+
+Bot has to record 1 2 3 4 5 6 numbers 
+Maybe if you also record 7+ you can just add them to get games played instead of recording games played as a seperate number?
+Idk sounds stupid just spitting it out there
+
+issue is how do you represent keyboard 
+its a core part of wordle website

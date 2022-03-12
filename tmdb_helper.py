@@ -69,8 +69,20 @@ def tmdb_search(mov_title):
 
 
 #TMDB title search to validate api
-def title_validator(mov_title):
-    url = tmdb_base_url+"search/movie?api_key="+tmdb_key+"&query="+mov_title
+# def title_validator(mov_title):
+#     url = tmdb_base_url+"search/movie?api_key="+tmdb_key+"&query="+mov_title
+#     response = requests.get(url)
+#     data = response.json()
+
+    # returns complete title from api if validation success or empty title if validation failure
+    # if data["total_results"] != 0:
+    #     return data["results"][0]["original_title"], True
+    # else:
+    #     return '', False
+
+#TMDB title search to validate api but for watched movies because I don't know how it works
+def title_validator(wch_title):
+    url = tmdb_base_url+"search/movie?api_key="+tmdb_key+"&query="+wch_title
     response = requests.get(url)
     data = response.json()
 
@@ -80,11 +92,11 @@ def title_validator(mov_title):
     else:
         return '', False
 
-
 def trending_daily():
     url = f"{tmdb_base_url}trending/movie/day?api_key={tmdb_key}"
     response = requests.get(url)
-    #print(json.dumps(response.json(), indent=4, sort_keys=True, ensure_ascii=False))
+    #return response
+    print(json.dumps(response.json(), indent=4, sort_keys=True, ensure_ascii=False))
 
 
 def genre_list():

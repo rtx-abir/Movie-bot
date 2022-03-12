@@ -7,7 +7,7 @@ from tmdb_helper import *
 from movie_helper import *
 from server import keep_alive
 from discord_components import interaction
-
+import asyncio
 
 client = discord.Client()
 command_pref = "uwu"
@@ -68,6 +68,66 @@ async def on_message(message):
         movie_title = msg.split('rm ', 1)[1].lower()
         await rm_func(message, movie_title, message.author)
 
+    if message.content.startswith(f'{command_pref} mw2'):
+        try:
+            await mw2_func(message)
+        except:
+            await message.channel.send("Movie watchlist is empty!") 
+        
+        while True:
+            #try: # try except is not required but i would recommend using it
+            done, pending = await asyncio.wait(
+            [
+                asyncio.create_task(client.wait_for("button_click"), name="btn"),
+                asyncio.create_task(client.wait_for("select_option"), name="select")
+            ], return_when=asyncio.FIRST_COMPLETED)
+
+            finished = list(done)[0]
+            event = finished.get_name()
+            res = finished.result()
+
+            if event == "select":
+                label = res.raw_data['data']['values'][0]
+                movie_list = see_movie_list(message.guild.id)
+
+                mov_embed = await mw3_func(message, label)
+                await res.respond(
+                    type=7,
+                    ephemeral=False, # we dont want to spam someone
+                    embed=mov_embed,
+                    components= 
+                            [Button(style = ButtonStyle.red, 
+                            label="Remove from watchlist", 
+                            custom_id = label),
+                            Select(placeholder=label,
+                                options=[
+                                    SelectOption(
+                                        label=mov,
+                                        value=mov
+                                    ) for mov in movie_list
+                                ])
+                    ]
+                )
+            elif event == "btn":
+                res.message.components[0].components[0].disabled = True
+                await res.respond(
+                    type=7,
+                    content = f"{res.component.custom_id} was requested to be removed",components=res.message.components
+                )
+                author_name=res.author
+                await rm_func(message, res.component.custom_id,author_name)
+            
+            for task in pending:
+                try:
+                    task.cancel()
+                except:
+                    pass
+
+            # res = await client.wait_for(event="button_click")
+            # event = await client.wait_for("select_option")
+
+                    
+
     if message.content.startswith(f'{command_pref} mw'):
         await mw_func(message)
 
@@ -118,11 +178,26 @@ async def on_message(message):
                 author_name=res.author
                 await mf_func(message, movie_name)
 
-#Reviews		
+#Watched Movies / Reviews		
+    if message.content.startswith(f'{command_pref} watched'): 
+        msg = message.content
+        wch_title = msg.split('watched ', 1)[1].lower()
+        await watched(message,wch_title,message.author) 
+
+
+    if message.content.startswith(f'{command_pref} watchedrm'):
+        msg = message.content
+        wch_title = msg.split('watchedrm ', 1)[1].lower()
+        await watchedremove(message,wch_title,message.author)
+        await watchedremove(message) 
+
+
+    if message.content.startswith(f'{command_pref} wl'):  
+        await watchedlist(message)		
+
+
     if message.content.startswith(f'{command_pref} rw'):  
         await review(message)
-    if message.content.startswith(f'{command_pref} rl'):  
-        await reviews(message)
         
 
 #Help
